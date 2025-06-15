@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YieldCraft – Where strategy meets crypto yield</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #cdd7ef, #9fc1ed);
+      min-height: 100vh;
+    }
+    .table .table-success:nth-child(even) {
+      background-color: #d8e6f7 !important;
+    }
+    .table .table-success:nth-child(odd) {
+      background-color: #e9f1fb !important;
+    }
+  </style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ffffff">
+</head>
+<body>
+  <div class="container my-4">
+    <div class="d-flex align-items-center justify-content-center mb-4">
+      <img src="images/mascot.png" alt="YieldCraft Logo" class="img-fluid me-3" style="max-height: 120px;">
+      <div>
+        <h1 class="mb-1">YieldCraft</h1>
+        <p class="text-muted fst-italic mb-0">Where strategy meets crypto yield.</p>
+      </div>
+    </div>
+    <form id="simulationForm" onsubmit="return false;">
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <div class="card-header"><strong>Lending BTC</strong> via <a href="https://app.aave.com/?marketName=proto_arbitrum_v3" target="_blank">AAVE</a></div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label for="depositValue" class="form-label">Collateral value (USDC)</label>
+                <input type="number" class="form-control" id="depositValue" placeholder="Ex: 4000" min="0" step="0.01" value="4000">
+              </div>
+              <div class="mb-3">
+                <label for="wbtcPrice" class="form-label">WBTC Price (USDC)</label>
+                <div class="input-group">
+                  <input type="number" class="form-control" id="wbtcPrice" placeholder="Ex: 105000" min="0" step="0.01" value="105000">
+                  <button class="btn btn-outline-secondary" type="button" id="refreshPriceBtn" title="Refresh price">
+                    <i class="bi-arrow-clockwise"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="wbtcAmount" class="form-label">Amount supplied (WBTC)</label>
+                <input type="text" class="form-control" id="wbtcAmount" readonly>
+              </div>
+              <div class="mb-3">
+                <label for="depositYield" class="form-label">Collateral APY (%)</label>
+                <input type="number" class="form-control border border-success" id="depositYield" placeholder="Ex: 2.57" min="0" step="0.01" value="0.01">
+              </div>
+              <div class="mb-3">
+                <label for="depositTotal" class="form-label">Estimated annual yield (collateral)</label>
+                <input type="text" class="form-control" id="depositTotal" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <div class="card-header"><strong>Borrowing</strong> via <a href="https://app.aave.com/?marketName=proto_arbitrum_v3" target="_blank">AAVE</a></div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label for="tvlMax" class="form-label">Max Loan-to-Value ratio (LTV %)</label>
+                <input type="number" class="form-control" id="tvlMax" placeholder="Ex: 60" min="0" step="0.01" value="60">
+              </div>
+              <div class="mb-3">
+                <label for="borrowableAmount" class="form-label">Maximum borrowable amount</label>
+                <input type="text" class="form-control" id="borrowableAmount" readonly>
+              </div>
+              <div class="mb-3">
+                <label for="loanInterest" class="form-label">Borrowing interest rate (%)</label>
+                <input type="number" class="form-control border border-danger" id="loanInterest" placeholder="Ex: 8.09" min="0" step="0.01" value="4.98">
+              </div>
+              <!-- Recalculé après Taux emprunt -->
+              <div class="mb-3">
+                <label for="realLTV" class="form-label">Effective LTV (%)</label>
+                <input type="text" class="form-control" id="realLTV" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <div class="card-header">
+              <strong>Investing</strong> via 
+              <a href="https://app.beefy.finance" target="_blank">Beefy</a> / 
+              <a href="https://hyperliquid.xyz" target="_blank">Hyperliquid</a>
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label for="borrowedAmount" class="form-label">Capital invested (from loan)</label>
+                <input type="number" class="form-control" id="borrowedAmount" placeholder="Ex: 600" min="0" step="0.01" value="600">
+              </div>
+              <div class="mb-3">
+                <label for="vaultYield" class="form-label">Vault APY (%)</label>
+                <input type="number" class="form-control border border-success" id="vaultYield" placeholder="Ex: 15" min="0" step="0.1" value="35">
+              </div>
+              <div class="mb-3">
+                <label for="duration" class="form-label">Investment duration</label>
+                <div class="input-group">
+                  <input type="number" class="form-control" id="duration" placeholder="Ex: 12" min="1" step="1" value="1">
+                  <select class="form-select" id="durationUnit">
+                    <option value="months" >months</option>
+                    <option value="years" selected>years</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="recurringTopup" class="form-label">Recurring contribution (USDC/month)</label>
+                <input type="number" class="form-control w-auto mb-2" id="vaultTopupInput" min="0" step="1" value="0">
+                <div id="splitSliderGroup" class="d-none">
+                  <label for="splitSlider" class="form-label text-center w-100">
+                    Loan/Vault allocation <br>
+                    <span id="splitLabel" class="fw-bold d-block">100% to vault</span>
+                  </label>
+                  <input type="range" class="form-range" id="splitSlider" min="0" max="100" step="1" value="100">
+                  <small class="text-muted d-block text-center">0% loan repayment ← 50/50 → 100% vault investment</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row text-center mb-4">
+        <div class="col-md-6">
+          <h5 id="breakEven">Break-even point: 1 year</h5>
+        </div>
+        <div class="col-md-6">
+          <h5><span id="totalContributedLabel">Total contributed:</span> <span id="totalContributed"></span></h5>
+          <h5><span id="netGainLabel">Net gain:</span> <span id="netGain"></span></h5>
+          <h5><span id="finalCapitalLabel">Exit capital:</span> <span id="finalCapital"></span></h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="ratio ratio-16x9">
+            <canvas id="pnlChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div id="chartImageContainer" class="mb-4"></div>
+      <div id="monthlyBreakdown" class="mt-4"></div>
+    </form>
+  </div>
+  <!-- Chart.js UMD global -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="simulation-lending.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').then(function(reg) {
+          console.log('Service worker registered.', reg);
+        });
+      });
+    }
+  </script>
+</body>
+</html>

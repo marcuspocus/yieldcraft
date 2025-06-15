@@ -1,0 +1,15 @@
+{
+  "name": "yieldcraft",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Marc Deschamps",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "netlify-cli": "^22.1.3"
+  }
+}
