@@ -1,0 +1,21 @@
+{
+  "short_name": "YieldCraft",
+  "name": "YieldCraft – Where strategy meets crypto yield",
+  "description": "Progressive Web App for YieldCraft lending simulation tool.",
+  "start_url": "/simulation-lending.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
