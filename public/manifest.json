@@ -3,7 +3,7 @@
   "name": "YieldCraft – Where strategy meets crypto yield",
   "description": "Progressive Web App for YieldCraft lending simulation tool.",
   "start_url": "/",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "icons": [
